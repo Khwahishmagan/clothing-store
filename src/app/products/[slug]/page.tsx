@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProduct, products, formatPrice } from "@/lib/products";
+import { getProduct, products } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductDetail } from "@/components/ProductDetail";
 
@@ -17,10 +17,12 @@ export default async function ProductPage({
   const product = getProduct(slug);
   if (!product) notFound();
 
-  const related = products
-    .filter((p) => p.category === product.category && p.slug !== product.slug)
-    .concat(products.filter((p) => p.slug !== product.slug))
-    .slice(0, 3);
+  const related = [
+    ...products.filter(
+      (p) => p.category === product.category && p.slug !== product.slug
+    ),
+    ...products.filter((p) => p.slug !== product.slug),
+  ].slice(0, 3);
 
   return (
     <div>
@@ -36,7 +38,7 @@ export default async function ProductPage({
 
       <ProductDetail product={product} />
 
-      <section className="mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pb-20 pt-4 sm:px-6 lg:px-8">
         <h2 className="font-display text-3xl">You may also like</h2>
         <div className="mt-10 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
           {related.map((p, i) => (
